@@ -5,4 +5,4 @@ aptPkgs = ["chromium"]
 cmds = ["npm ci --include=optional"]
 
 [start]
-cmd = "node index.js"
+cmd = "PUPPETEER_SKIP_DOWNLOAD=true PUPPETEER_EXECUTABLE_PATH=$(which chromium || which chromium-browser || echo '/usr/bin/chromium') node index.js"
