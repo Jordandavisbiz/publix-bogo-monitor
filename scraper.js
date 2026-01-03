@@ -16,13 +16,12 @@ export async function scrapeBogoDeals() {
     ]
   };
 
-  // Use system Chromium if available (for Railway/cloud deployments)
-  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
-                         (process.env.RAILWAY_ENVIRONMENT ? '/usr/bin/chromium' : undefined);
-
-  if (executablePath) {
-    launchOptions.executablePath = executablePath;
-    console.log(`Using Chromium at: ${executablePath}`);
+  // Use custom Chromium path if specified (optional)
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    console.log(`Using custom Chromium at: ${process.env.PUPPETEER_EXECUTABLE_PATH}`);
+  } else {
+    console.log('Using Puppeteer bundled Chromium');
   }
 
   const browser = await puppeteer.launch(launchOptions);
