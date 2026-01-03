@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs", "chromium", "nss", "freetype", "harfbuzz", "ca-certificates", "fontconfig"]
+aptPkgs = ["chromium", "chromium-driver"]
 
 [phases.install]
 cmds = ["npm ci"]
