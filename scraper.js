@@ -2,7 +2,8 @@ import puppeteer from 'puppeteer';
 
 export async function scrapeBogoDeals() {
   console.log('Launching browser...');
-  const browser = await puppeteer.launch({
+
+  const launchOptions = {
     headless: 'new',
     args: [
       '--no-sandbox',
@@ -12,9 +13,19 @@ export async function scrapeBogoDeals() {
       '--no-first-run',
       '--no-zygote',
       '--disable-gpu'
-    ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
-  });
+    ]
+  };
+
+  // Use system Chromium if available (for Railway/cloud deployments)
+  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
+                         (process.env.RAILWAY_ENVIRONMENT ? '/usr/bin/chromium' : undefined);
+
+  if (executablePath) {
+    launchOptions.executablePath = executablePath;
+    console.log(`Using Chromium at: ${executablePath}`);
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
 
   try {
     const page = await browser.newPage();
