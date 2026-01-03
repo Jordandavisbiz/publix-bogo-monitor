@@ -1,32 +1,22 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 export async function sendEmail(subject, htmlContent, config) {
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // use TLS
-    auth: {
-      user: config.user,
-      pass: config.password
-    },
-    tls: {
-      rejectUnauthorized: false
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-  });
-
-  const mailOptions = {
-    from: config.user,
-    to: config.to,
-    subject: subject,
-    html: htmlContent
-  };
+  const resend = new Resend(config.apiKey);
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.messageId);
+    const { data, error } = await resend.emails.send({
+      from: config.from || 'Publix BOGO Monitor <onboarding@resend.dev>',
+      to: [config.to],
+      subject: subject,
+      html: htmlContent,
+    });
+
+    if (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
+
+    console.log('Email sent successfully:', data.id);
     return true;
   } catch (error) {
     console.error('Error sending email:', error.message);

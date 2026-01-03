@@ -29,14 +29,13 @@ async function checkBogoDeals() {
     // 3. Send email notification
     console.log('Step 3: Sending email notification...');
     const emailConfig = {
-      service: process.env.EMAIL_SERVICE || 'gmail',
-      user: process.env.EMAIL_USER,
-      password: process.env.EMAIL_PASSWORD,
-      to: process.env.EMAIL_TO || process.env.EMAIL_USER
+      apiKey: process.env.RESEND_API_KEY,
+      from: process.env.EMAIL_FROM || 'Publix BOGO Monitor <onboarding@resend.dev>',
+      to: process.env.EMAIL_TO
     };
 
-    if (!emailConfig.user || !emailConfig.password) {
-      console.error('ERROR: Email credentials not configured in .env file');
+    if (!emailConfig.apiKey || !emailConfig.to) {
+      console.error('ERROR: RESEND_API_KEY and EMAIL_TO must be configured in .env file');
       return;
     }
 
@@ -55,13 +54,12 @@ async function checkBogoDeals() {
     // Try to send error notification
     try {
       const emailConfig = {
-        service: process.env.EMAIL_SERVICE || 'gmail',
-        user: process.env.EMAIL_USER,
-        password: process.env.EMAIL_PASSWORD,
-        to: process.env.EMAIL_TO || process.env.EMAIL_USER
+        apiKey: process.env.RESEND_API_KEY,
+        from: process.env.EMAIL_FROM || 'Publix BOGO Monitor <onboarding@resend.dev>',
+        to: process.env.EMAIL_TO
       };
 
-      if (emailConfig.user && emailConfig.password) {
+      if (emailConfig.apiKey && emailConfig.to) {
         await sendEmail(
           'Publix BOGO Monitor - Error',
           `<p>An error occurred while checking BOGO deals:</p><pre>${error.message}</pre>`,
